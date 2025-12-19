@@ -4,7 +4,9 @@ WORKDIR /app
 
 COPY . .
 
-RUN chmod +x mvnw && ./mvnw clean package -DskipTests
+RUN chmod +x mvnw && ./mvnw clean package -DskipTests \
+    && echo "=== TARGET CONTENT ===" \
+    && ls -lah target
 
 EXPOSE 8080
 
