@@ -1,5 +1,4 @@
-console.log("VITE_API_BASE_URL =", import.meta.env.VITE_API_BASE_URL);
-console.log("API_BASE =", API_BASE);
+export const API_BASE = "/api";
 /**
  * Login sırasında auth objesi üretir
  */
