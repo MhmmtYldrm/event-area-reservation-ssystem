@@ -1,9 +1,5 @@
-// ✅ Prod/Preview: Vercel env'den gelir (VITE_API_BASE_URL)
-// ✅ Local: yoksa otomatik localhost'a düşer
-// Not: Sonunda "/" varsa temizliyoruz.
-const RAW_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8089";
-export const API_BASE = RAW_BASE.replace(/\/$/, "");
-
+console.log("VITE_API_BASE_URL =", import.meta.env.VITE_API_BASE_URL);
+console.log("API_BASE =", API_BASE);
 /**
  * Login sırasında auth objesi üretir
  */
