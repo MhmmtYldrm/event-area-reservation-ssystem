@@ -1,32 +1,36 @@
-const API_BASE = "http://localhost:8089/api";
+// ✅ Prod/Preview: Vercel env'den gelir (VITE_API_BASE_URL)
+// ✅ Local: yoksa otomatik localhost'a düşer
+// Not: Sonunda "/" varsa temizliyoruz.
+const RAW_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8089";
+export const API_BASE = RAW_BASE.replace(/\/$/, "");
 
-/** Login sırasında auth objesi üretir */
+/**
+ * Login sırasında auth objesi üretir
+ */
 export function makeAuth(email, password) {
   const token = btoa(`${email}:${password}`);
   return { email, token };
 }
 
-/** Authorization header üretir */
-export function authHeader(auth, withJson = true) {
-  const h = {};
-  if (auth?.token) h.Authorization = `Basic ${auth.token}`;
-  if (withJson) h["Content-Type"] = "application/json";
-  return h;
+/**
+ * Fetch için Authorization header üretir
+ */
+export function authHeader(auth, withJson) {
+  const headers = {};
+
+  if (auth?.token) headers.Authorization = `Basic ${auth.token}`;
+  if (withJson) headers["Content-Type"] = "application/json";
+
+  return headers;
 }
 
+/**
+ * Ortak response handler
+ */
 async function handle(res) {
   if (!res.ok) {
-    let txt = "";
-    try {
-      txt = await res.text();
-    } catch {}
-
-    try {
-      const maybeJson = JSON.parse(txt);
-      throw new Error(maybeJson.message || txt || `HTTP ${res.status}`);
-    } catch {
-      throw new Error(txt || `HTTP ${res.status}`);
-    }
+    const txt = await res.text().catch(() => "");
+    throw new Error(txt || `HTTP ${res.status}`);
   }
 
   const ct = res.headers.get("content-type") || "";
